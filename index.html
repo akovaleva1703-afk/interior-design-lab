@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#76614f">
+<meta name="description" content="Персональный 12-недельный курс дизайна интерьера с нуля">
+<link rel="manifest" href="manifest.json">
+<title>Interior Design Lab</title>
+<style>
+:root{--bg:#f6f1eb;--paper:#fffdf9;--ink:#302a25;--muted:#766b60;--line:#e5d9cc;--accent:#806a55;--accent2:#c8b49d;--soft:#eee5db;--green:#56745d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:28px 18px 24px;background:linear-gradient(135deg,#e6d7c7,#f5eee6);border-bottom:1px solid var(--line)}
+.wrap{max-width:900px;margin:auto;padding:0 16px} .brand{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.08;margin:10px 0}h2{font-size:23px;margin:0 0 10px}h3{font-size:18px;margin:0 0 8px}p{margin:6px 0 12px}.sub{color:var(--muted);max-width:650px}
+main{padding:20px 0 50px}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 3px 12px #44332208}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:var(--soft);border-radius:13px;padding:12px}.stat b{display:block;font-size:21px}.stat span{font-size:12px;color:var(--muted)}
+.bar{height:8px;background:#e8dfd5;border-radius:20px;overflow:hidden;margin:12px 0}.bar span{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+button,select{font:inherit;border-radius:11px;border:1px solid var(--line);padding:10px 13px;background:#fffdf9;color:var(--ink)}button{cursor:pointer}button.primary{background:var(--accent);border-color:var(--accent);color:white}button:focus,select:focus,input:focus,textarea:focus{outline:2px solid var(--accent2);outline-offset:2px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.weeklist{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px}
+.week{border:1px solid var(--line);border-radius:15px;padding:15px;background:var(--paper);display:flex;flex-direction:column;gap:8px}.week.done{border-color:#9eb4a1}.week small{color:var(--muted)}.week .tag{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.task{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee7df}.task:last-child{border-bottom:0}.task input{margin-top:5px;accent-color:var(--accent);width:17px;height:17px;flex-shrink:0}
+.lesson-detail{display:none}.lesson-detail.active{display:block}.pill{display:inline-block;background:var(--soft);padding:4px 9px;border-radius:99px;font-size:12px;color:var(--muted)}
+textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fffdf9;font:inherit;resize:vertical}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.card{padding:15px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">Персональная учебная программа</div>
+<h1>Interior Design Lab</h1>
+<p class="sub">Дизайн интерьера с нуля: 12 недель практики, от анализа интерьеров до первого учебного проекта.</p>
+<div class="controls"><button class="primary" id="continueBtn">Продолжить обучение</button><button id="resetBtn">Сбросить прогресс</button></div>
+</div></header>
+<main class="wrap">
+<section class="card">
+<h2>Твой прогресс</h2>
+<div class="stats"><div class="stat"><b id="weeksDone">0 из 12</b><span>недель завершено</span></div><div class="stat"><b id="tasksDone">0</b><span>заданий выполнено</span></div><div class="stat"><b>5 ч</b><span>в неделю</span></div></div>
+<div class="bar"><span id="progressBar"></span></div>
+<p class="sub" id="progressText">Начни с недели 1. Отмечай задания по мере выполнения — прогресс сохраняется на этом устройстве.</p>
+</section>
+<section class="card">
+<h2>Учебный план</h2>
+<p class="sub">Выбери неделю, чтобы увидеть задания и материалы. Не нужно выполнять всё идеально — важнее закончить практическую работу.</p>
+<div class="controls"><select id="monthFilter" aria-label="Фильтр по месяцу"><option value="all">Все 12 недель</option><option value="1">Месяц 1 · Основы</option><option value="2">Месяц 2 · Планировка и инструменты</option><option value="3">Месяц 3 · Проект и портфолио</option></select></div>
+<div class="weeklist" id="weekList"></div>
+</section>
+<section class="card lesson-detail" id="detail">
+<div class="pill" id="detailTag"></div>
+<h2 id="detailTitle" style="margin-top:10px"></h2>
+<p id="detailIntro" class="sub"></p>
+<h3>Пошаговые задания</h3>
+<div id="taskList"></div>
+<h3 style="margin-top:18px">Что должно получиться</h3>
+<p id="detailResult"></p>
+<h3 style="margin-top:18px">Мои заметки</h3>
+<textarea id="notes" placeholder="Запиши свои идеи, решения и вопросы. Заметки сохраняются на этом устройстве."></textarea>
+<div class="controls"><button class="primary" id="completeBtn">Отметить неделю завершённой</button><button id="closeBtn">Закрыть урок</button></div>
+</section>
+<section class="card">
+<h2>Первый урок · Начни сегодня</h2>
+<p><b>Тема:</b> как дизайнер анализирует интерьер, а не просто выбирает красивую картинку.</p>
+<ol>
+<li>Создай на компьютере папку «Мой первый дизайн-проект».</li>
+<li>Внутри создай папки: «01 Референсы», «02 Планировка», «03 Материалы», «04 3D», «05 Презентация».</li>
+<li>Найди 5 современных гостиных, которые тебе нравятся. Используй запросы: <i>warm contemporary living room</i>, <i>beige brown modern interior</i>, <i>natural oak travertine living room</i>.</li>
+<li>Выбери одну картинку и опиши: основные цвета, древесину, камень/фактуры, освещение и настроение.</li>
+<li>Сохрани картинки и свои заметки в папку проекта.</li>
+</ol>
+<p class="sub">Не устанавливай пока сложные программы. Сначала учимся видеть и объяснять дизайнерские решения.</p>
+<button class="primary" id="openWeek1">Открыть задания недели 1</button>
+</section>
+<section class="card">
+<h2>Важно о профессии</h2>
+<p>За 60 часов можно освоить начальную базу и подготовить первый учебный кейс. Для реальных проектов дополнительно понадобятся рабочие чертежи, инженерные системы, строительные узлы, сметы и практика с обратной связью.</p>
+</section>
+</main>
+<footer>Interior Design Lab · Учебный прогресс хранится локально в браузере на этом устройстве.</footer>
+<script>
+const weeks=[
+{n:1,m:1,title:"Как мыслит дизайнер",intro:"Учимся анализировать интерьер: видеть не только красивую картинку, но и цвет, фактуры, пропорции, свет и детали.",tasks:["Создать папку проекта и пять подпапок для материалов.","Собрать 5 референсов современных гостиных.","Выбрать один интерьер и записать основные цвета, материалы, освещение и настроение.","Сформулировать 3 причины, почему этот интерьер нравится.","Сохранить подборку и заметки в папку «01 Референсы»."],result:"Пять референсов и одна заполненная карточка анализа."},
+{n:2,m:1,title:"Цвет и материалы",intro:"Разбираемся, как сочетать нейтральные оттенки, дерево, камень и текстиль.",tasks:["Найти примеры сочетаний бежевого, молочного, тауп и коричневого.","Изучить визуальные отличия дуба, ореха, травертина, мрамора и матовой краски.","Собрать 3 палитры по 4–5 оттенков.","Выбрать одну палитру для будущей комнаты.","Записать, где будет основной цвет, а где — акценты."],result:"Одна выбранная палитра и подборка фактур."},
+{n:3,m:1,title:"Композиция и мебель",intro:"Учимся оценивать масштаб предметов, визуальный баланс и удобство перемещения.",tasks:["Разобрать на референсах расположение дивана, столика, кресла и ковра.","Нарисовать от руки или в простой программе 2 варианта гостиной.","Отметить основные проходы и зоны использования.","Сравнить варианты: какой удобнее и почему.","Выбрать один вариант для дальнейшей работы."],result:"Два эскиза и обоснованный выбор планировки."},
+{n:4,m:1,title:"Свет и эргономика",intro:"Понимаем, как объединить основной, рабочий и акцентный свет и сделать комнату удобной.",tasks:["Найти пример общего, локального и акцентного освещения.","Изучить разницу тёплого и нейтрального света.","Нанести на эскиз места светильников и зоны активности.","Проверить, не мешает ли мебель проходам, дверям и окнам.","Доработать концепцию комнаты."],result:"Концепция гостиной с палитрой, мебелью и планом освещения."},
+{n:5,m:2,title:"Обмеры и чертёж",intro:"Учимся фиксировать геометрию комнаты и основные элементы.",tasks:["Выбрать реальную комнату или учебный план.","Записать длину, ширину и высоту помещения.","Измерить окна, двери, выступы и ниши.","Нарисовать вид сверху и подписать размеры.","Перепроверить, что размеры и расположение проёмов согласованы."],result:"Обмерный план комнаты с размерами."},
+{n:6,m:2,title:"Функциональная планировка",intro:"Переносим идеи на план и проверяем, насколько удобно пользоваться пространством.",tasks:["Нанести на план двери и окна.","Разместить диван, столик, кресло и хранение.","Проверить открывание дверей и доступ к окнам.","Сравнить два варианта расстановки.","Подписать ключевые размеры и объяснить выбор."],result:"План мебели с размерами и пояснениями."},
+{n:7,m:2,title:"Первые шаги в 3D",intro:"Выбери одну программу — SketchUp или Planner 5D — и освой базовые действия.",tasks:["Открыть выбранную программу и изучить интерфейс.","Создать проект и построить стены комнаты.","Добавить пол, потолок, окна и двери.","Разместить основные предметы мебели.","Сохранить проект и сделать скриншот модели."],result:"Базовая объёмная модель комнаты."},
+{n:8,m:2,title:"Материалы и комплектация",intro:"Подбираем реальные материалы и предметы, а затем считаем ориентировочный бюджет.",tasks:["Назначить материалы стенам и полу в 3D-модели.","Подобрать диван, столик, кресло и светильники.","Записать название, цену, размеры и ссылку на каждый предмет.","Составить таблицу минимум из 8 позиций.","Посчитать ориентировочную общую стоимость выбранных предметов."],result:"Модель с материалами и таблица комплектации."},
+{n:9,m:3,title:"Концепция проекта",intro:"Формулируем задачу и фиксируем решения до финального моделирования.",tasks:["Определить, кто будет пользоваться комнатой и для чего.","Сформулировать короткое описание концепции.","Утвердить палитру, материалы и референсы.","Зафиксировать выбранную планировку.","Собрать мудборд в одном листе."],result:"Мудборд и утверждённая концепция."},
+{n:10,m:3,title:"Детализация 3D-модели",intro:"Доводим базовую модель до цельного интерьерного решения.",tasks:["Проверить масштаб мебели и пропорции помещения.","Добавить отделку, текстиль и основные детали.","Разместить светильники по выбранному сценарию.","Проверить модель с нескольких точек обзора.","Исправить элементы, которые выглядят слишком крупными, мелкими или случайными."],result:"Завершённая базовая 3D-модель."},
+{n:11,m:3,title:"Визуализация",intro:"Подготавливаем изображения, которые ясно показывают интерьер и его атмосферу.",tasks:["Выбрать 2–3 ракурса, показывающих комнату с разных сторон.","Настроить материалы и освещение.","Сделать пробные изображения.","Проверить читаемость композиции и реалистичность материалов.","Сохранить лучшие 2–3 изображения."],result:"Две или три визуализации проекта."},
+{n:12,m:3,title:"Портфолио и следующие шаги",intro:"Оформляем работу в кейс и оцениваем, каких навыков не хватает для коммерческих задач.",tasks:["Собрать концепцию, мудборд и планировку.","Добавить визуализации и таблицу комплектации.","Написать краткое описание задачи и решений.","Экспортировать презентацию в PDF.","Составить список следующих тем: рабочие чертежи, инженерия, сметы и коммуникация с клиентом."],result:"Первый учебный кейс для портфолио и план дальнейшего обучения."}
+];
+const KEY="idl_progress_v1";
+let state=JSON.parse(localStorage.getItem(KEY)||'{"tasks":{},"notes":{},"completed":{}}');
+let selected=1;
+function save(){localStorage.setItem(KEY,JSON.stringify(state));renderStats();}
+function taskKey(w,i){return w+"-"+i}
+function doneCount(){return Object.values(state.tasks).filter(Boolean).length}
+function weekDone(w){return weeks.find(x=>x.n===w).tasks.every((_,i)=>!!state.tasks[taskKey(w,i)]) || !!state.completed[w]}
+function renderStats(){let d=weeks.filter(w=>weekDone(w.n)).length;document.getElementById("weeksDone").textContent=d+" из 12";document.getElementById("tasksDone").textContent=doneCount();document.getElementById("progressBar").style.width=(d/12*100)+"%";document.getElementById("progressText").textContent=d===12?"Все недели отмечены. Проверь итоговый проект и продолжай углублять профессиональные навыки.":"Выполнено "+d+" из 12 недель. Отмечай задания по мере выполнения — прогресс сохраняется на этом устройстве."; }
+function renderWeeks(){const f=document.getElementById("monthFilter").value;const list=document.getElementById("weekList");list.innerHTML="";weeks.filter(w=>f==="all"||String(w.m)===f).forEach(w=>{let div=document.createElement("div");div.className="week"+(weekDone(w.n)?" done":"");div.innerHTML=`<div class="tag">Неделя ${w.n} · Месяц ${w.m}</div><h3>${w.title}</h3><small>${w.tasks.length} заданий · ${weekDone(w.n)?"Неделя завершена":"В процессе"}</small><p>${w.intro}</p><button data-week="${w.n}" class="${weekDone(w.n)?"":"primary"}">${weekDone(w.n)?"Посмотреть урок":"Открыть урок"}</button>`;div.querySelector("button").onclick=()=>openWeek(w.n);list.appendChild(div)});renderStats()}
+function openWeek(n){selected=n;let w=weeks.find(x=>x.n===n);document.getElementById("detail").classList.add("active");document.getElementById("detailTag").textContent="Неделя "+w.n+" · Месяц "+w.m;document.getElementById("detailTitle").textContent=w.title;document.getElementById("detailIntro").textContent=w.intro;document.getElementById("detailResult").textContent=w.result;document.getElementById("notes").value=state.notes[n]||"";let box=document.getElementById("taskList");box.innerHTML="";w.tasks.forEach((t,i)=>{let label=document.createElement("label");label.className="task";let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!state.tasks[taskKey(n,i)];cb.onchange=()=>{state.tasks[taskKey(n,i)]=cb.checked;save();renderWeeks()};let span=document.createElement("span");span.textContent=t;label.append(cb,span);box.appendChild(label)});document.getElementById("completeBtn").textContent=state.completed[n]?"Снять отметку завершения":"Отметить неделю завершённой";document.getElementById("detail").scrollIntoView({behavior:"smooth",block:"start"});}
+document.getElementById("monthFilter").onchange=renderWeeks;
+document.getElementById("notes").addEventListener("input",e=>{state.notes[selected]=e.target.value;save()});
+document.getElementById("completeBtn").onclick=()=>{state.completed[selected]=!state.completed[selected];save();renderWeeks();openWeek(selected)};
+document.getElementById("closeBtn").onclick=()=>document.getElementById("detail").classList.remove("active");
+document.getElementById("openWeek1").onclick=()=>openWeek(1);
+document.getElementById("continueBtn").onclick=()=>{let next=weeks.find(w=>!weekDone(w.n))||weeks[11];openWeek(next.n)};
+document.getElementById("resetBtn").onclick=()=>{if(confirm("Сбросить весь прогресс и заметки? Это действие нельзя отменить.")){state={tasks:{},notes:{},completed:{}};save();renderWeeks();document.getElementById("detail").classList.remove("active")}};
+renderWeeks();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>

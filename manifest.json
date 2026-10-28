@@ -1,0 +1,18 @@
+{
+  "name": "Interior Design Lab",
+  "short_name": "Design Lab",
+  "description": "12-недельный курс дизайна интерьера с нуля",
+  "lang": "ru",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f1eb",
+  "theme_color": "#76614f",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
